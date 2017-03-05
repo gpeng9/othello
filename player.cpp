@@ -9,8 +9,12 @@ using namespace std;
 Player::Player(Side side) {
     // Will be set to true in test_minimax.cpp.
     testingMinimax = false;
-    // HELLO
-    /*
+     opponent = WHITE;
+     player = BLACK;
+     board1 = new Board();
+     
+    
+     /*
      * 
      * TODO: Do any initialization you need to do here (setting up the board,
      * precalculating things, etc.) However, remember that you will only have
@@ -42,5 +46,56 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
      * TODO: Implement how moves your AI should play here. You should first
      * process the opponent's opponents move before calculating your own move
      */
-    return nullptr;
+     
+      if (opponentsMove == NULL)
+      {
+		 for (int i = 0; i < 8; i++) 
+		  {
+			for (int j = 0; j < 8; j++) 
+			{
+				
+				Move move(i, j);
+            if (board1->checkMove(&move, player)) 
+            {
+				board1->doMove(&move,player);
+				 
+				return &move;
+			}
+			}
+		}
+	  }
+	  else 
+	  {
+		 
+		  board1->doMove(opponentsMove ,opponent);
+		  std::cerr << "yah"<< std::endl;
+      }
+      if(board1->hasMoves(player) == false)
+      {
+		  
+		  
+		  
+		  return NULL;
+	  }
+	  else 
+	  {
+		  for (int i = 0; i < 8; i++) 
+		  {
+			for (int j = 0; j < 8; j++) 
+			{
+				
+				Move move(i, j);
+				if (board1->checkMove(&move, player)) 
+				{
+					board1->doMove(&move,player);
+					
+					return &move;
+				}
+			}
+		}
+	}
+	return NULL;
 }
+      
+   
+

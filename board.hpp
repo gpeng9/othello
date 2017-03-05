@@ -28,7 +28,7 @@ public:
     int count(Side side);
     int countBlack();
     int countWhite();
-	int heuristic(Board * boardCopy, Move* playerMove);
+	
     void setBoard(char data[]);
 };
 

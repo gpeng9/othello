@@ -12,7 +12,6 @@ Player::Player(Side side) {
      opponent = WHITE;
      player = BLACK;
      board1 = new Board();
-     board2 = new Board();
      
     
      /*
@@ -78,6 +77,7 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
 	  }
 	  else 
 	  {
+		 
 		  for (int i = 0; i < 8; i++) 
 		  {
 			for (int j = 0; j < 8; j++) 
@@ -86,6 +86,7 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
 				move->setY(j);
 				if (board1->checkMove(move, player)) 
 				{
+					board2 = new Board();
 					board2 = board1 -> copy();
 					board2->doMove(move,player);
 					if (heuristic(board2, move) > min)
@@ -94,14 +95,17 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
 						best_move->setY(j);
 						min = heuristic(board2, move);
 					}
+					delete board2;
 				}
-				delete board2;
+				
 			}
 		}
-		
-		return move;
+		if (best_move->x == 0 && best_move->y==0)
+			return NULL
+		else
+			return best_move;
 	}
-	return NULL;
+	
 }
 
 int Player::heuristic(Board * boardCopy, Move* playerMove)

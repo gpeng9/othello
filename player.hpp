@@ -15,7 +15,7 @@ public:
 	Side opponent;
 	Board* board1;
     Move *doMove(Move *opponentsMove, int msLeft);
-
+	int heuristic(Board * boardCopy, Move* playerMove);
     // Flag to tell if the player is running within the test_minimax context
     bool testingMinimax;
 };

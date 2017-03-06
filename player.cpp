@@ -128,11 +128,17 @@ int Player::heuristic(Board * boardCopy, Move* playerMove)
 			score += 5;
 		}
 		else
-			score += 2;
+			score += 3;
 	}
+	
+	else if (playerMove->y == 0 || playerMove->y == 7)
+	{
+		score += 3;
+	}
+	
 	if (playerMove->x == 1 || playerMove->x == 6 || playerMove->y == 1 || playerMove->y == 6)
 	{
-		score -= -3;
+		score -= 5;
 	}
 	
 	return score;

@@ -10,7 +10,13 @@ Player::Player(Side side) {
     // Will be set to true in test_minimax.cpp.
     testingMinimax = false;
      opponent = WHITE;
-     player = BLACK;
+     player = side;
+     if (side == BLACK)
+     {
+		 opponent = WHITE;
+	 }
+	 else
+		opponent = WHITE;
      board1 = new Board();
      
     
@@ -46,8 +52,8 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
      * TODO: Implement how moves your AI should play here. You should first
      * process the opponent's opponents move before calculating your own move
      */
-     Move* move = new Move(0,0);
-     Move* best_move = new Move(0,0);
+     Move* move = new Move(-1,-1);
+     Move* best_move = new Move(-1,-1);
       if (opponentsMove == NULL)
       {
 		 for (int i = 0; i < 8; i++) 
@@ -86,22 +92,25 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
 				move->setY(j);
 				if (board1->checkMove(move, player)) 
 				{
-					board2 = new Board();
-					board2 = board1 -> copy();
+					std::cerr << move->x << " "<< move->y <<std::endl;
+					Board* board2 = board1 -> copy();
+					
 					board2->doMove(move,player);
+					int score = heuristic(board2, move);
 					if (heuristic(board2, move) > min)
 					{
-						best_move->setX(i);
-						best_move->setY(j);
-						min = heuristic(board2, move);
+						best_move->setX(move->x);
+						best_move->setY(move->y);
+						min = score;
 					}
+					std::cerr << best_move->x << " a  "<< best_move->y <<std::endl;
 					delete board2;
 				}
 				
 			}
 		}
-		if (best_move->x == 0 && best_move->y==0)
-			return NULL
+		if (best_move->x == -1 && best_move->y == -1)
+			return NULL;
 		else
 			return best_move;
 	}
@@ -122,7 +131,7 @@ int Player::heuristic(Board * boardCopy, Move* playerMove)
 	}
 		if (playerMove->x == 1 || playerMove->x == 6 || playerMove->y == 1 || playerMove->y == 6)
 		{
-			score *= -3;
+			score *= -6;
 		}
 	return score;
 }      

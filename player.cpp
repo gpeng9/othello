@@ -95,6 +95,12 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
 					Board* board2 = board1 -> copy();
 					
 					board2->doMove(move,player);
+					if (board2->hasMoves(player)==false)
+					{
+						best_move->setX(move->x);
+						best_move->setY(move->y);
+						continue;
+					}
 					int score = heuristic(board2, move);
 					if (heuristic(board2, move) > min)
 					{
@@ -114,20 +120,21 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
 
 int Player::heuristic(Board * boardCopy, Move* playerMove)
 {
-	int score = boardCopy->count(opponent) - boardCopy->count(player);
+	int score = boardCopy->count(player) - boardCopy->count(opponent);
 	if (playerMove->x == 0 || playerMove->x == 7)
 	{
 		if (playerMove->y == 0 || playerMove->y == 7)
 		{
-			score *= 3;
+			score += 5;
 		}
 		else
-			score *= 2;
+			score += 2;
 	}
-		if (playerMove->x == 1 || playerMove->x == 6 || playerMove->y == 1 || playerMove->y == 6)
-		{
-			score *= -3;
-		}
+	if (playerMove->x == 1 || playerMove->x == 6 || playerMove->y == 1 || playerMove->y == 6)
+	{
+		score -= -3;
+	}
+	
 	return score;
 }      
 

@@ -92,7 +92,6 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
 				move->setY(j);
 				if (board1->checkMove(move, player)) 
 				{
-					std::cerr << move->x << " "<< move->y <<std::endl;
 					Board* board2 = board1 -> copy();
 					
 					board2->doMove(move,player);
@@ -103,16 +102,12 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
 						best_move->setY(move->y);
 						min = score;
 					}
-					std::cerr << best_move->x << " a  "<< best_move->y <<std::endl;
 					delete board2;
 				}
-				
 			}
 		}
-		if (best_move->x == -1 && best_move->y == -1)
-			return NULL;
-		else
-			return best_move;
+		board1 -> doMove(best_move,player);
+		return best_move;
 	}
 	
 }
@@ -131,7 +126,7 @@ int Player::heuristic(Board * boardCopy, Move* playerMove)
 	}
 		if (playerMove->x == 1 || playerMove->x == 6 || playerMove->y == 1 || playerMove->y == 6)
 		{
-			score *= -6;
+			score *= -3;
 		}
 	return score;
 }      

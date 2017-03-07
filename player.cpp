@@ -177,7 +177,7 @@ int Player:: Minimax (Board * boardCopy, Move* playerMove, int depth, Side maxim
 					int score = Minimax(board2, move, depth - 1, opponent);
 					
 					
-					if (heuristic(board2, move) > bestValue)
+					if (score > bestValue)
 					{
 						best_move->setX(move->x);
 						best_move->setY(move->y);

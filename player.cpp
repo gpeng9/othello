@@ -46,106 +46,12 @@ Player::~Player() {
  * The move returned must be legal; if there are no valid moves for your side,
  * return nullptr.
  */
+
 Move *Player::doMove(Move *opponentsMove, int msLeft) {
     /*
      * TODO: Implement how moves your AI should play here. You should first
      * process the opponent's opponents move before calculating your own move
      */
-     Move* move = new Move(-1,-1);
-	Move* best_move = new Move(-1,-1);
-	if (opponentsMove == NULL)
-	{
-		for (int i = 0; i < 8; i++)
-		{
-			for (int j = 0; j < 8; j++)
-			{
-				move->setX(i);
-				move->setY(j);
-				if (board1->checkMove(move, player))
-				{
-					board1->doMove(move,player);
-					return move;
-				}
-			}
-		}
-	}
-	else
-	{
-		board1->doMove(opponentsMove ,opponent);
-	}
-	int min = -1000;
-	if(board1->hasMoves(player) == false)
-	{
-		return NULL;
-	}
-	else
-	{
-		for (int i = 0; i < 8; i++)
-		{
-			for (int j = 0; j < 8; j++)
-			{
-				move->setX(i);
-				move->setY(j);
-				if (board1->checkMove(move, player))
-				{
-					Board* board2 = board1 -> copy();
-					board2->doMove(move,player);
-					if (board2->hasMoves(player)==false)
-					{
-						best_move->setX(move->x);
-						best_move->setY(move->y);
-						continue;
-					}
-					int score = heuristic(board2, move);
-					if (heuristic(board2, move) > min)
-					{
-						best_move->setX(move->x);
-						best_move->setY(move->y);
-						min = score;
-					}
-				delete board2;
-				}
-			}
-		}
-		board1 -> doMove(best_move,player);
-		return best_move;
-	}
-}
-	
-
-int Player::heuristic(Board * boardCopy, Move* playerMove)
-{
-	int score = boardCopy->count(player) - boardCopy->count(opponent);
-	if (playerMove->x == 0 || playerMove->x == 7)
-	{
-		if (playerMove->y == 0 || playerMove->y == 7)
-		{
-			score += 5;
-		}
-		else
-			score += 3;
-	}
-	
-	else if (playerMove->y == 0 || playerMove->y == 7)
-	{
-		score += 3;
-	}
-	
-	if (playerMove->x == 1 || playerMove->x == 6 || playerMove->y == 1 || playerMove->y == 6)
-	{
-		score -= 5;
-	}
-	
-	return score;
-}      
-
-
-/**
-Move *Player::doMove(Move *opponentsMove, int msLeft) {
-    
-     * TODO: Implement how moves your AI should play here. You should first
-     * process the opponent's opponents move before calculating your own move
-     
      Move* move = new Move(-1,-1);
      Move* best_move = new Move(-1,-1);
       if (opponentsMove == NULL)
@@ -240,12 +146,13 @@ int Player::heuristic(Board * boardCopy, Move* playerMove)
 
 int Player:: Minimax (Board * boardCopy, Move* playerMove, int depth, Side maximizingPlayer)
 {
-	Move* move = new Move(-1,-1);
-	Move* best_move  = new Move(-1,-1);
+	Move* move = new Move(3,4);
+	Move* best_move  = new Move(3,4);
 	int totalScore = 0;
 	if (depth == 0 || boardCopy->hasMoves(maximizingPlayer) == false)
 	{
-		return heuristic(boardCopy, playerMove);
+		int score = boardCopy->count(player) - boardCopy->count(opponent);
+		return score;
 	}
 	if (maximizingPlayer == player)
 	{
@@ -259,33 +166,24 @@ int Player:: Minimax (Board * boardCopy, Move* playerMove, int depth, Side maxim
 				if (board1->checkMove(move, opponent)) 
 				{
 				
-					Board* board2 = board1 -> copy();
+					Board* board2 = boardCopy -> copy();
 					board2->doMove(playerMove, player);
 					board2->doMove(move,opponent);
-					if (board2->hasMoves(opponent)==false)
+					
+					totalScore = Minimax(board2, move, depth - 1, opponent);
+					
+					
+					if (totalScore > bestValue)
 					{
 						best_move->setX(move->x);
 						best_move->setY(move->y);
-						continue;
-					}
-					int score = Minimax(board2, move, depth - 1, opponent);
-					
-					
-					if (score > bestValue)
-					{
-						best_move->setX(move->x);
-						best_move->setY(move->y);
-						bestValue = score;
+						bestValue = totalScore;
 					}
 					delete board2;
 			}
 		}
 	}
-		Board* board2 = board1 -> copy();
-		board2->doMove(playerMove, player);		
-		board2->doMove(move,opponent);
-		int totalScore = heuristic(board2, best_move);
-		delete board2;
+		
 		return  totalScore;
 	}
 	else 
@@ -300,15 +198,10 @@ int Player:: Minimax (Board * boardCopy, Move* playerMove, int depth, Side maxim
 				if (board1->checkMove(move, player)) 
 				{
 					
-					Board* board2 = board1 -> copy();
+					Board* board2 = boardCopy -> copy();
 					board2->doMove(playerMove, opponent);
 					board2->doMove(move,player);
-					if (board2->hasMoves(player)==false)
-					{
-						best_move->setX(move->x);
-						best_move->setY(move->y);
-						continue;
-					}
+					
 					totalScore = Minimax(board2, move, depth - 1, player);
 					
 					if (totalScore < scoreValue)
@@ -321,11 +214,102 @@ int Player:: Minimax (Board * boardCopy, Move* playerMove, int depth, Side maxim
 				}
 			}
 		}
-		Board* board2 = board1 -> copy();
-		board2->doMove(playerMove, opponent);		
-		board2->doMove(move,player);
-		int totalScore = heuristic(board2, best_move);
-		delete board2;
+		
 		return  totalScore;
 	}
-}*/
+}
+
+/**
+Move *Player::doMove(Move *opponentsMove, int msLeft) {
+    
+     * TODO: Implement how moves your AI should play here. You should first
+     * process the opponent's opponents move before calculating your own move
+     
+     Move* move = new Move(-1,-1);
+	Move* best_move = new Move(-1,-1);
+	if (opponentsMove == NULL)
+	{
+		for (int i = 0; i < 8; i++)
+		{
+			for (int j = 0; j < 8; j++)
+			{
+				move->setX(i);
+				move->setY(j);
+				if (board1->checkMove(move, player))
+				{
+					board1->doMove(move,player);
+					return move;
+				}
+			}
+		}
+	}
+	else
+	{
+		board1->doMove(opponentsMove ,opponent);
+	}
+	int min = -1000;
+	if(board1->hasMoves(player) == false)
+	{
+		return NULL;
+	}
+	else
+	{
+		for (int i = 0; i < 8; i++)
+		{
+			for (int j = 0; j < 8; j++)
+			{
+				move->setX(i);
+				move->setY(j);
+				if (board1->checkMove(move, player))
+				{
+					Board* board2 = board1 -> copy();
+					board2->doMove(move,player);
+					if (board2->hasMoves(player)==false)
+					{
+						best_move->setX(move->x);
+						best_move->setY(move->y);
+						continue;
+					}
+					int score = heuristic(board2, move);
+					if (heuristic(board2, move) > min)
+					{
+						best_move->setX(move->x);
+						best_move->setY(move->y);
+						min = score;
+					}
+				delete board2;
+				}
+			}
+		}
+		board1 -> doMove(best_move,player);
+		return best_move;
+	}
+}
+	
+
+int Player::heuristic(Board * boardCopy, Move* playerMove)
+{
+	int score = boardCopy->count(player) - boardCopy->count(opponent);
+	if (playerMove->x == 0 || playerMove->x == 7)
+	{
+		if (playerMove->y == 0 || playerMove->y == 7)
+		{
+			score += 5;
+		}
+		else
+			score += 3;
+	}
+	
+	else if (playerMove->y == 0 || playerMove->y == 7)
+	{
+		score += 3;
+	}
+	
+	if (playerMove->x == 1 || playerMove->x == 6 || playerMove->y == 1 || playerMove->y == 6)
+	{
+		score -= 5;
+	}
+	
+	return score;
+}      
+*/
